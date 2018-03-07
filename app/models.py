@@ -4,7 +4,7 @@ from flask_login import UserMixin
 from . import login_manager
 
 class Role(db.Model):
-	__talbename__ = 'roles'
+	__tablename__ = 'roles'
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(64), unique=True)
 	users = db.relationship('User', backref='role', lazy='dynamic')
@@ -13,7 +13,7 @@ class Role(db.Model):
 		return '<Role %r>' % self.name
 
 class User(UserMixin, db.Model):
-	__talbename__ = 'users'
+	__tablename__ = 'users'
 	id = db.Column(db.Integer, primary_key=True)
 	email = db.Column(db.String(64), unique=True, index=True)
 	username = db.Column(db.String(64), unique=True, index=True)
