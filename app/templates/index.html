@@ -17,6 +17,7 @@
 {{ wtf.quick_form(form) }}
 </form>
 <br/>
-{{ current_time }}
-{{ known }}
+<br/>
+<br/>
+{{ moment(current_time).format('LLLL') }}
 {% endblock %}
