@@ -5,7 +5,7 @@ class Config:
 	SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
 	SQLALCHEMY_COMMIT_ON_TEARDOWN = True
 	FLASKY_MAIL_SUBJECT_PREFIX = '[Flasky]'
-	FLASKY_MAIL_SENDER = 'Flasky Admin <flasky@example.com>'
+	FLASKY_MAIL_SENDER = 'fengkunbin@126.com'
 	FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN')
 	SQLALCHEMY_TRACK_MODIFICATIONS = True
 
@@ -15,11 +15,11 @@ class Config:
 
 class DevelopmentConfig(Config):
 	DEBUG = True
-	MAIL_SERVER = 'smtp.googlemail.com'
-	MAIL_PORT = 578
-	MAIL_USE_TLS = True
-	MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
-	MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+	MAIL_SERVER = 'smtp.126.com'
+	MAIL_PORT = 25
+#	MAIL_USE_SSL = True
+	MAIL_USERNAME = os.environ.get('MAIL_USERNAME')#'fengkunbin@126.com'#
+	MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')#'126mail'#
 	SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
 		'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
 
