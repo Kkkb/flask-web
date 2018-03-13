@@ -4,9 +4,9 @@ from flask_login import UserMixin, AnonymousUserMixin
 from . import login_manager
 
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from flask import current_app
+from flask import current_app, request
 from datetime import datetime
-
+import hashlib
 class Role(db.Model):
 	__tablename__ = 'roles'
 	id = db.Column(db.Integer, primary_key=True)
@@ -102,6 +102,8 @@ class User(UserMixin, db.Model):
 		db.session.add(self)
 		return True
 
+	avatar_hash = db.Column(db.String(32))
+
 	def __init__(self, **kwargs):
 		super(User, self).__init__(**kwargs)
 		if self.role is None:
@@ -110,6 +112,9 @@ class User(UserMixin, db.Model):
 			if self.role is None:
 				self.role = Role.query.filter_by(default=True).first()
 
+		if self.email is not None and self.avatar_hash is None:
+			self.avatar_hash = hashlib.md5(self.email.encode('utf-8')).hexdigest()
+				
 	def can(self, permissions):
 		return self.role is not None and (self.role.permissions & permissions) == permissions
 
@@ -152,8 +157,17 @@ class User(UserMixin, db.Model):
 		if self.query.filter_by(email=new_email).first() is not None:
 			return False
 		self.email = new_email
+		self.avatar_hash = hashlib.md5(self.email.encode('utf-8')).hexdigest()
 		db.session.add(self)
 		return True
+
+	def gravatar(self, size=100, default='identicon', rating='g'):
+		if request.is_secure:
+			url = 'https://secure.gravatar.com/avatar'
+		else:
+			url = 'http://www.gravatar.com/avatar'
+		hash = hashlib.md5(self.email.encode('utf-8')).hexdigest()
+		return '{url}/{hash}?s={size}&d={default}&r={rating}'.format(url=url, hash=hash, size=size, default=default, rating=rating)
 
 class AnonymousUser(AnonymousUserMixin):
 	def can(self, permissions):
