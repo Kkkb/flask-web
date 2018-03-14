@@ -2,26 +2,23 @@ from datetime import datetime
 from flask import render_template, session, redirect, url_for, flash, abort
 
 from . import main
-from forms import NameForm, EditProfileForm, EditProfileAdminForm
+from forms import NameForm, EditProfileForm, EditProfileAdminForm, PostForm
 from .. import db
-from ..models import User, Permission
+from ..models import User, Permission, Post
 from ..decorators import admin_required, permission_required
 from flask_login import current_user
 
 from flask_login import login_required
+
 @main.route('/', methods=['GET', 'POST'])
 def index():
-	form = NameForm()
-	if form.validate_on_submit():
-		old_name = session.get('name')
-		if old_name is not None and old_name != form.name.data:
-			flash('Looks like you have changed your name!')
-		session['name'] = form.name.data
+	form = PostForm()
+	if current_user.can(Permission.WRITE) and form.validate_on_submit():
+		post = Post(body=form.body.data, author=current_user._get_current_object())
+		db.session.add(post)
 		return redirect(url_for('.index'))
-	return render_template('index.html',
-						   form=form, name=session.get('name'),
-						   known=session.get('known', False),
-						   current_time=datetime.utcnow())
+	posts = Post.query.order_by(Post.timestamp.desc()).all()
+	return render_template('index.html', form=form, posts=posts)		
 
 @main.route('/admin')
 @login_required
@@ -31,7 +28,7 @@ def for_admins_only():
 
 @main.route('/moderator')
 @login_required
-@permission_required(Permission.MODERATE_COMMENTS)
+@permission_required(Permission.MODERATE)
 def for_moderators_only():
 	return "For comment moderators!"
 
