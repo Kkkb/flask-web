@@ -29,8 +29,6 @@ class Role(db.Model):
 		if self.permissions is None:
 			self.permissions = 0
 
-
-
 	@staticmethod
 	def insert_roles():
 		roles = {
@@ -105,6 +103,7 @@ class User(UserMixin, db.Model):
 								backref=db.backref('followed', lazy='joined'),
 								lazy='dynamic',
 								cascade='all, delete-orphan')
+
 	def __init__(self, **kwargs):
 		super(User, self).__init__(**kwargs)
 		if self.role is None:
@@ -236,7 +235,7 @@ class User(UserMixin, db.Model):
 		return self.followed.filter_by(followed_id=user.id).first() is not None
 
 	def is_following_by(self, user):
-		return self.followers.filter_by(followed_id=user.id).first() is not None	
+		return self.followers.filter_by(follower_id=user.id).first() is not None	
 
 	def __repr__(self):
 		return '<User %r>' % self.username
