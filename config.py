@@ -20,6 +20,7 @@ class DevelopmentConfig(Config):
 #	MAIL_USE_SSL = True
 	FLASKY_POSTS_PER_PAGE = 18
 	FLASKY_FOLLOWERS_PER_PAGE = 8
+	FLASKY_COMMENTS_PER_PAGE = 6
 	MAIL_USERNAME = 'fengkunbin@126.com'#os.environ.get('MAIL_USERNAME')#
 	MAIL_PASSWORD = '126mail'#os.environ.get('MAIL_PASSWORD')#
 	SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
