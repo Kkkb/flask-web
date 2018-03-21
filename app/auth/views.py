@@ -10,7 +10,7 @@ from flask_login import current_user
 from ..email import send_email
 
 
-#@auth.before_app_request
+@auth.before_app_request
 def before_request():
 	if current_user.is_authenticated:
 		current_user.ping()
@@ -56,10 +56,10 @@ def register():
 		db.session.add(user)
 		db.session.commit()
 		token = user.generate_confirmation_token()
-#		send_email(user.email, 'Confirm Your Account',
-#				   'auth/email/confirm', user=user, token=token)
-#		flash('A confirmation email has been sent to you by email.') # test without Email
-#		return redirect(url_for('main.index'))
+		send_email(user.email, 'Confirm Your Account',
+				   'auth/email/confirm', user=user, token=token)
+		flash('A confirmation email has been sent to you by email.') # test without Email
+		return redirect(url_for('main.index'))
 		flash('You can login now')
 		return redirect(url_for('auth.login'))
 	return render_template('auth/register.html', form=form)

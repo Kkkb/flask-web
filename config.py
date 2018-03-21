@@ -8,6 +8,9 @@ class Config:
 	FLASKY_MAIL_SENDER = 'fengkunbin@126.com'
 	FLASKY_ADMIN = 'fengkunbin@126.com'#os.environ.get('FLASKY_ADMIN')
 	SQLALCHEMY_TRACK_MODIFICATIONS = True
+	FLASKY_POSTS_PER_PAGE = 18
+	FLASKY_FOLLOWERS_PER_PAGE = 8
+	FLASKY_COMMENTS_PER_PAGE = 6
 
 	@staticmethod
 	def init_app(app):
@@ -18,9 +21,6 @@ class DevelopmentConfig(Config):
 	MAIL_SERVER = 'smtp.126.com'
 	MAIL_PORT = 25
 #	MAIL_USE_SSL = True
-	FLASKY_POSTS_PER_PAGE = 18
-	FLASKY_FOLLOWERS_PER_PAGE = 8
-	FLASKY_COMMENTS_PER_PAGE = 6
 	MAIL_USERNAME = 'fengkunbin@126.com'#os.environ.get('MAIL_USERNAME')#
 	MAIL_PASSWORD = '126mail'#os.environ.get('MAIL_PASSWORD')#
 	SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
@@ -30,7 +30,8 @@ class TestingConfig(Config):
 	TESTING = True
 	SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
 		'sqlite:///' + os.path.join(basedir, 'data-test.sqlite')
-
+	WTF_CSRF_ENABLED = False
+	
 class ProductionConfig(Config):
 	SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
 		'sqlite:///' + os.path.join(basedir, 'data.sqlite')
