@@ -60,8 +60,8 @@ def register():
 				   'auth/email/confirm', user=user, token=token)
 		flash('A confirmation email has been sent to you by email.') # test without Email
 		return redirect(url_for('main.index'))
-		flash('You can login now')
-		return redirect(url_for('auth.login'))
+#		flash('You can login now')
+#		return redirect(url_for('auth.login'))
 	return render_template('auth/register.html', form=form)
 
 

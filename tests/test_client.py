@@ -43,6 +43,7 @@ class FlaskClientTestCase(unittest.TestCase):
 		token = user.generate_confirmation_token()
 		response = self.client.get(url_for('auth.confirm', token=token),
 										   follow_redirects=True)
+		data = response.get_data(as_text=True)
 		self.assertTrue('You have confirmed your account' in data)
 	
 		response = self.client.get(url_for('auth.logout'), follow_redirects=True)

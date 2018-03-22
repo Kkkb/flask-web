@@ -10,7 +10,7 @@
 <table class="table table-hover followers">
 	<thead><tr><th>User</th><th>Since</th></tr></thead>
 	{% for follow in follows %}
-	{% if not current_user.username == follow.user.username %}
+	{% if user != follow.user %}
 	<tr>
 		<td>
 			<a href="{{ url_for('.user', username = follow.user.username)}}">
