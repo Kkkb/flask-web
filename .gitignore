@@ -43,3 +43,6 @@ tmp
 # Virtual environment
 myvenv
 
+# freeze
+freeze.py
+app/build

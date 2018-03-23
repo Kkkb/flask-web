@@ -96,6 +96,19 @@ class Comment(db.Model):
 		target.body_html = bleach.linkify(bleach.clean(
 			markdown(value, output_format='html'),
 			tags=allowed_tags, strip=True))
+	
+	def to_json(self):
+		json_comment = {
+			'url': url_for('api.get_comment', id=self.id),
+			'post_url': url_for('api.get_post', id=self.id),
+			'body': self.body,
+			'body_html': self.body_html,
+			'timestamp': self.timestamp,
+			'author_url': url_for('api.get_user', id=self.author_id)
+		}
+
+	def from_json():
+		pass
 
 
 class User(UserMixin, db.Model):
@@ -363,7 +376,6 @@ class Post(db.Model):
 			'comment_count': self.comments.count()
 		}
 		return json_post
-
 
 
 db.event.listen(Comment.body, 'set', Comment.on_changed_body)

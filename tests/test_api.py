@@ -36,12 +36,10 @@ class APITestCase(unittest.TestCase):
 		json_response = json.loads(response.get_data(as_text=True))
 		self.assertEqual(json_response['error'], 'not found')
 
-
-
 	def test_no_auth(self):
 		response = self.client.get('/api/v1/posts/',
 								   content_type='application/json')
-		self.assertEqual(response.status_code, 200) # why not 401?
+		self.assertEqual(response.status_code, 401) # why not 401? AssertionError: 200 != 401
 
 	def test_bad_auth(self):
 		# add a user
@@ -55,10 +53,79 @@ class APITestCase(unittest.TestCase):
 		response = self.client.get(
 			'/api/v1/posts/',
 			headers=self.get_api_headers('gakki@love.me', 'dog'))
-		self.assertEqual(response.status_code, 401)
+		self.assertEqual(response.status_code, 401) # AssertionError: 200 != 401
 
+	def test_token_auth(self):
+		# add a user
+		r = Role.query.filter_by(name='User').first()
+		self.assertIsNotNone(r)
+		u = User(email='gakki@love.me', password='cat', confirmed=True,
+				 role=r)
+		db.session.add(u)
+		db.session.commit()
 
-'''
+		# issue a request with a bad token
+		response = self.client.get(
+			'/api/v1/posts/',
+			headers=self.get_api_headers('bad-token', ''))
+		self.assertEqual(response.status_code, 401) # AssertionError: 200 != 401
+
+		# get a token
+		response = self.client.post(
+			'/api/v1/token/',
+			headers=self.get_api_headers('gakki@love.me', 'cat'))
+		self.assertEqual(response.status_code, 200)
+		json_response = json.loads(response.get_data(as_text=True))
+		self.assertIsNotNone(json_response.get('token'))
+		token = json_response['token']
+
+		# issue a request with the token
+		response = self.client.get(
+			'/api/v1/posts/',
+			headers=self.get_api_headers(token, ''))
+		self.assertEqual(response.status_code, 200)
+
+	def test_unconfirmed_account(self):
+		# add an unconfirmed user
+		r = Role.query.filter_by(name='User').first()
+		self.assertIsNotNone(r)
+		u = User(email='gakki@love.me', password='cat', confirmed=False,
+				 role=r)
+		db.session.add(u)
+		db.session.commit()
+
+		# get list of posts with the unconfirmed account
+		response = self.client.get(
+			'/api/v1/posts/',
+			headers=self.get_api_headers('gakki@love.me', 'cat'))
+		self.assertEqual(response.status_code, 403) # AssertionError: 200 != 403
+
+	def test_posts(self):
+		# add a user
+		r = Role.query.filter_by(name='User').first()
+		self.assertIsNotNone(r)
+		u = User(email='gakki@love.me', password='cat', confirmed=True,
+				 role=r)
+		db.session.add(u)
+		db.session.commit()
+
+		# write an empty post
+		response = self.client.post(
+			'/api/v1/posts/',
+			headers=self.get_api_headers('gakki@love.me', 'cat'),
+			data=json.dumps({'body': ''}))
+		self.assertEqual(response.status_code, 400) # AssertionError: 403 != 400
+
+		# write a post
+		response = self.client.post(
+			'/api/v1/posts/',
+			headers=self.get_api_headers('gakki@love.me', 'cat'),
+			data=json.dumps({'body': 'body of the *blog* post'}))
+		self.assertEqual(response.status_code, 201)
+		url = response.headers.get('Location')
+		self.assertIsNotNone(url)
+
+'''	
 	
 	def test_posts(self):
 		r = Role.query.filter_by(name='User').first()
