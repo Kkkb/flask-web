@@ -125,7 +125,40 @@ class APITestCase(unittest.TestCase):
 		url = response.headers.get('Location')
 		self.assertIsNotNone(url)
 
-'''	
+		# get the new post
+		response = self.client.get(
+			url,
+			headers=self.get_api_headers('gakki@love.me', 'cat'))
+		self.assertEqual(response.status_code, 200)
+		json_response = json.loads(response.get_data(as_text=True))
+		self.assertEqual('http://localhost' + json_response['url', url])
+		self.assertEqual(json_response['body'], 'body of the *blog* post')
+		self.assertEqual(json_response['body_html'],
+						 '<p>body of the <em>blog</em> post</p>')
+		json_post = json_response
+
+		# get the post from the user
+		response = self.client.get(
+			'/api/v1/users/{}/posts/'.format(u.id),
+			headers=self.get_api_headers('gakki@love.me', 'cat'))
+		self.assertEqual(response.status_code,200)
+		json_response = json.loads(response.get_data(as_text=True))
+		self.assertIsNotNone(json_response.get('count', 0), 1)
+		self.assertEqual(json_response.get('count', 0), 1)
+		self.assertEqual(json_response['posts'][0], json_post)
+
+		# get the post from the user as a follower
+		response = self.client.get(
+			'/api/v1/users/{}/timeline/'.fromat(u.id),
+			headers=self.get_api_headers('gakki@love.me', 'cat'))
+		self.assertEqual(response.status_code, 200)
+		json_response = json.loads(response.get_data(as_text=True))
+		self.assertIsNotNone(json_response.get('posts'))
+		self.assertEqual(json_response.get('count', 0), 1)
+		self.assertEqual(json_response['posts'][0], json_post)
+
+
+'''			
 	
 	def test_posts(self):
 		r = Role.query.filter_by(name='User').first()
