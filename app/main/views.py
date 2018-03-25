@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import render_template, session, redirect, url_for, flash, abort, request, current_app, make_response
 
 from . import main
-from forms import NameForm, EditProfileForm, EditProfileAdminForm, PostForm, CommentForm
+from .forms import NameForm, EditProfileForm, EditProfileAdminForm, PostForm, CommentForm
 from .. import db
 from ..models import User, Permission, Post, Comment
 from ..decorators import admin_required, permission_required

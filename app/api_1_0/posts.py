@@ -4,7 +4,7 @@ from flask_httpauth import HTTPBasicAuth
 from . import api
 from ..models import Post, Permission
 from flask_login import login_required
-from decorators import permission_required
+from .decorators import permission_required
 from .errors import forbidden
 
 @api.route('/posts/<int:id>')

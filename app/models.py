@@ -199,7 +199,7 @@ class User(UserMixin, db.Model):
 		return json_user
 
 
- 	@staticmethod
+	@staticmethod
 	def verify_auth_token(token):
 		s = Serializer(current_app.config['SECRET_KEY'])
 		try:
