@@ -106,9 +106,12 @@ class Comment(db.Model):
 			'timestamp': self.timestamp,
 			'author_url': url_for('api.get_user', id=self.author_id)
 		}
-
-	def from_json():
-		pass
+	@staticmethod
+	def from_json(json_comment):
+		body = json_comment.get('body')
+		if body is None or body == '':
+			raise ValidationError('comment does not have a body')
+		return Comment(body=body)
 
 
 class User(UserMixin, db.Model):
@@ -369,11 +372,11 @@ class Post(db.Model):
 			'body': self.body,
 			'body_html': self.body_html,
 			'timestamp': self.timestamp,
-			'author': url_for('api.get_user', id=self.author_id,
+			'author_url': url_for('api.get_user', id=self.author_id,
 							  _external=True),
-			'comments': url_for('api.get_post_comments', id=self.id,
+			'comments_url': url_for('api.get_post_comments', id=self.id,
 							    _external=True),
-			'comment_count': self.comments.count()
+			'comment_count': self.comments.count(),
 		}
 		return json_post
 

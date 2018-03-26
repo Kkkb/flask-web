@@ -18,9 +18,12 @@ def get_user_posts(id):
 		error_out=False)
 	posts = pagination.items
 	prev = None
+	if pagination.has_prev:
+		prev = url_for('api.get_user_posts', id=id, page=page-1)
+	next = None
 	if pagination.has_next:
 		next = url_for('api.get_user_posts', id=id, page=page+1)
-	return jsonfiy({
+	return jsonify({
 		'posts': [post.to_json() for post in posts],
 		'prev': prev,
 		'next': next,
