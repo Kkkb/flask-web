@@ -24,7 +24,7 @@ class APITestCase(unittest.TestCase):
 		return {
 			'Authorization':
 				'Basic ' + b64encode(
-					(username + ':' + password).encode('utf-8')).decode('utf-8'),
+					(username + ':' + password).encode()).decode(),
 			'Accept': 'application/json',
 			'Content-Type': 'application/json',
 		}
@@ -216,17 +216,17 @@ class APITestCase(unittest.TestCase):
 		db.session.commit()
 
 		# add a post
-		post = Post(body='body of the post', author=u1, id=1)
-		print(post.id)
+		post = Post(body='body of the post', author=u1)
 		db.session.add(post)
 		db.session.commit()
+
 		# write a comment
 		response = self.client.post(
 			'/api/v1/posts/{}/comments/'.format(post.id),
 			headers=self.get_api_headers('k@love.me', 'dog'),
 			data=json.dumps({'body': 'Good [post](https://github.com/kkkb)!'}))
 		self.assertEqual(response.status_code, 201)
-		print(response.get_data(as_text=True))
+		print(response.get_data())
 		json_response = json.loads(response.get_data(as_text=True))
 		url = response.headers.get('Location')
 		self.assertIsNotNone(url)
