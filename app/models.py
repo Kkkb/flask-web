@@ -106,6 +106,9 @@ class Comment(db.Model):
 			'timestamp': self.timestamp,
 			'author_url': url_for('api.get_user', id=self.author_id)
 		}
+		# lack 'return json_comment' acused TyepError: 'NoneType' object is not subscriptable
+		return json_comment
+
 	@staticmethod
 	def from_json(json_comment):
 		body = json_comment.get('body')
