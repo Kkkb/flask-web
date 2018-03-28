@@ -208,9 +208,9 @@ class APITestCase(unittest.TestCase):
 		# add two users
 		r = Role.query.filter_by(name='User').first()
 		self.assertIsNotNone(r)
-		u1 = User(email='gakki@love.me', username='gakki',
+		u1 = User(email='john@example.com', username='john',
 				  password='cat', confirmed=True, role=r)
-		u2 = User(email='k@love.me', username='k',
+		u2 = User(email='susan@example.com', username='susan',
 				  password='dog', confirmed=True, role=r)
 		db.session.add_all([u1, u2])
 		db.session.commit()
@@ -223,32 +223,48 @@ class APITestCase(unittest.TestCase):
 		# write a comment
 		response = self.client.post(
 			'/api/v1/posts/{}/comments/'.format(post.id),
-			headers=self.get_api_headers('k@love.me', 'dog'),
-			data=json.dumps({'body': 'Good [post](https://github.com/kkkb)!'}))
+			headers=self.get_api_headers('susan@example.com', 'dog'),
+			data=json.dumps({'body': 'Good [post](http://example.com)!'}))
 		self.assertEqual(response.status_code, 201)
-		print(response.get_data())
 		json_response = json.loads(response.get_data(as_text=True))
 		url = response.headers.get('Location')
 		self.assertIsNotNone(url)
 		self.assertEqual(json_response['body'],
-						 'Good [post](https://github.com/kkkb)!')
+						 'Good [post](http://example.com)!')
 		self.assertEqual(re.sub('<.*?>', '', json_response['body_html']), 'Good post!')
 
 		# get the new comment
 		response = self.client.get(
 			url,
-			headers=self.get_api_headers('gakki@love.me', 'cat'))
+			headers=self.get_api_headers('john@example.com', 'cat'))
 		self.assertEqual(response.status_code, 200)
 		json_response = json.loads(response.get_data(as_text=True))
 		self.assertEqual('http://localhost' + json_response['url'], url)
 		self.assertEqual(json_response['body'],
-						 'Good [post](http://github.com/kkkb)!')
+						 'Good [post](http://example.com)!')
 
 		# add another comment
 		comment = Comment(body='Thank you!', author=u1, post=post)
 		db.session.add(comment)
 		db.session.commit()
 
+		# get the two comments from the post
+		response = self.client.get(
+			'/api/v1/posts/{}/comments/'.format(post.id),
+			headers=self.get_api_headers('susan@example.com', 'dog'))
+		self.assertEqual(response.status_code, 200)
+		json_response = json.loads(response.get_data(as_text=True))
+		self.assertIsNotNone(json_response.get('comments'))
+		self.assertEqual(json_response.get('count',0), 2)
+
+		# get all the comments
+		response = self.client.get(
+			'/api/v1/posts/{}/comments/'.format(post.id),
+			headers=self.get_api_headers('susan@example.com', 'dog'))
+		self.assertEqual(response.status_code, 200)
+		json_response = json.loads(response.get_data(as_text=True))
+		self.assertIsNotNone(json_response.get('comments'))
+		self.assertEqual(json_response.get('count', 0), 2)
 
 '''
 	def test_posts(self):
