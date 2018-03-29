@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import click
 COV = None
 if os.environ.get('FLASK_COVERAGE'):
 	import coverage
@@ -8,7 +9,7 @@ if os.environ.get('FLASK_COVERAGE'):
 from app import create_app, db
 from app.models import User, Role, Permission, Post, Follow, Comment
 from flask_script import Manager, Shell
-from flask_migrate import Migrate, MigrateCommand
+from flask_migrate import Migrate, MigrateCommand, upgrade
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 manager = Manager(app)
@@ -40,5 +41,30 @@ def test(coverage=False):
 		print('HTML version: file://%s/index.html' % covdir)
 		COV.erase()
 
+
+@app.cli.command()
+@click.option('--length', default=25,
+			  help='Number of functions to include in the profiler report.')
+@click.option('--profile-dir', default=None,
+			  help='Directory where profiler data files are saved.')			  
+@manager.command
+def profile(length=25, profile_dir=None):
+	"""Start the application under the code profiler."""
+	from werkzeug.contrib.profiler import ProfilerMiddleware
+	app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[length],
+									  profile_dir=profile_dir)
+	app.run(debug=False)
+
+@manager.command
+def deploy():
+	"""Run deployment task."""
+	from flask_migrate import upgrade
+	from app.models import Role, User
+
+	upgrade()
+
+	Role.insert_roles()
+
+	User.add_self_follows()
 if __name__ == '__main__':
 	manager.run()
