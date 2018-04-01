@@ -61,7 +61,7 @@ def deploy():
 	from flask_migrate import upgrade
 	from app.models import Role, User
 
-	upgrade()
+	
 
 	Role.insert_roles()
 
