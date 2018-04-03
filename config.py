@@ -9,7 +9,7 @@ class Config:
 		['true', 'on', '1']
 	SQLALCHEMY_COMMIT_ON_TEARDOWN = True
 	FLASKY_MAIL_SUBJECT_PREFIX = '[Flasky]'
-	FLASKY_MAIL_SENDER = 'fengkunbin@126.com'
+	FLASKY_MAIL_SENDER = 'gokunbin@gmail.com'
 	FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN')
 	MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
 	MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
@@ -45,7 +45,7 @@ class ProductionConfig(Config):
 
 	@classmethod
 	def init_app(cls, app):
-		Config.init_app(app)
+		Config.init_app(app) 
 
 		# email errors to the administrators
 		import logging
