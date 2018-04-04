@@ -15,7 +15,7 @@ ul.posts {
 	list-style-type: none;
 	padding: 0px;
 	margin: 16px 0px 0px 0px;
-	border-top: 1px solid #e0e0e0;
+	border-top: 0px solid #e0e0e0;
 }
 
 div.post-tabs ul.posts {
@@ -45,7 +45,7 @@ div.post-thumbnail {
 }
 
 div.post-content {
-	margin-left: 48px;
+	margin-left: 86px;
 	min-height: 48px;
 }
 
@@ -58,7 +58,7 @@ div.pagination {
 
 div.flask-pagedown-preview {
 	margin: 10px 0px 10px 0px;
-	border: 1px solid #e0e0e0;
+	border: 0px solid #e0e0e0;
 	padding: 4px;
 }
 

@@ -9,10 +9,10 @@ class NameForm(FlaskForm):
 	submit = SubmitField('Submit')
 
 class EditProfileForm(FlaskForm):
-	name = StringField('Real name', validators=[Length(0, 64)])
-	location = StringField('Location', validators=[Length(0, 64)])
-	about_me = TextAreaField('About me')
-	submit = SubmitField('Submit')
+	name = StringField('真实姓名', validators=[Length(0, 64)])
+	location = StringField('你所在的城市', validators=[Length(0, 64)])
+	about_me = TextAreaField('关于我')
+	submit = SubmitField('发送')
 
 class EditProfileAdminForm(FlaskForm):
 	email = StringField('Email',validators=[Required(), Length(1, 64),
@@ -44,9 +44,9 @@ class EditProfileAdminForm(FlaskForm):
 			raise ValidationError('Username already in use.')			
 
 class PostForm(FlaskForm):
-	body = PageDownField("What's on your mind?", validators=[Required()])
-	submit = SubmitField('Submit')
+	body = PageDownField("想想说些什么？", validators=[Required()])
+	submit = SubmitField('发送')
 
 class CommentForm(FlaskForm):
 	body = StringField('', validators=[Required()])
-	submit = SubmitField('Submit')
+	submit = SubmitField('发送')

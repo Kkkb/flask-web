@@ -77,7 +77,7 @@ def edit_profile():
 		current_user.location = form.location.data
 		current_user.about_me = form.about_me.data
 		db.session.add(current_user)
-		flash('Your profile has been updated.')
+		flash('你的个人资料已更新')
 		return redirect(url_for('.user', username=current_user.username))
 	form.name.data = current_user.name
 	form.location.data = current_user.location
@@ -120,7 +120,7 @@ def post(id):
 						 post=post,
 						 author=current_user._get_current_object())
 		db.session.add(comment)
-		flash('Your comment has been published.')
+		flash('发表成功！')
 		return redirect(url_for('.post', id=post.id, page=-1))
 	page = request.args.get('.post', 1, type=int)
 	if page == -1:
@@ -144,7 +144,7 @@ def edit(id):
 	if form.validate_on_submit():
 		post.body = form.body.data
 		db.session.add(post)
-		flash('The post has been updated.')
+		flash('文章已更新')
 		return redirect(url_for('.post', id=post.id))
 	form.body.data = post.body
 	return render_template('edit_post.html', form=form)
@@ -156,14 +156,14 @@ def edit(id):
 def follow(username):
 	user = User.query.filter_by(username=username).first()
 	if user is None:
-		flash('Invalid user.')
+		flash('用户不存在')
 		return redirect(url_for('.index'))
 	if current_user.is_following(user):
-		flash('You are alreadey following this user.')
+		flash('你已关注此用户')
 		return redirect(url_for('.user', username=username))
 	current_user.follow(user)
 	db.session.commit()
-	flash('You are now following %s.' % username)
+	flash('你正在关注 %s.' % username)
 	return redirect(url_for('.user', username=username))
 
 
@@ -171,7 +171,7 @@ def follow(username):
 def followers(username):
 	user = User.query.filter_by(username=username).first()
 	if user is None:
-		flash('Invalid user.')
+		flash('用户不存在')
 		return redirect(url_for('.index'))
 	page = request.args.get('page', 1, type=int)
 	pagination = user.followers.paginate(
@@ -179,7 +179,7 @@ def followers(username):
 		error_out=False)
 	follows = [{'user': item.follower, 'timestamp': item.timestamp}
 				 for item in pagination.items]
-	return render_template('followers.html', user=user, title="Followers of",
+	return render_template('followers.html', user=user, title="的粉丝",
 						   endpoint='.followers', pagination=pagination,
 						   follows=follows)
 
@@ -188,7 +188,7 @@ def followers(username):
 def followed_by(username):
 	user = User.query.filter_by(username=username).first()
 	if user is None:
-		flash('Invalid user.')
+		flash('用户不存在')
 		return redirect(url_for('.index'))
 	page = request.args.get('page', 1, type=int)
 	pagination = user.followed.paginate(
@@ -197,7 +197,7 @@ def followed_by(username):
 		error_out=False)
 	follows = [{'user': item.followed, 'timestamp': item.timestamp}
 		for item in pagination.items]
-	return render_template('followers.html', user=user, title="Followed by",
+	return render_template('followers.html', user=user, title="关注了···",
 						   endpoint=".followed_by", pagination=pagination,
 						   follows=follows)
 
@@ -211,11 +211,11 @@ def unfollow(username):
 		flash('Invalid user.')
 		return redirect(url_for('.user', username=username))
 	if not current_user.is_following(user):
-		flash('You are not following this user.')
+		flash('你已经取消关注此用户')
 		return redirect(url_for('.user', username=username))
 	current_user.unfollow(user)
 	db.session.commit()
-	flash('You are not following %s anymore.' % username)
+	flash('你不再关注 %s ' % username)
 	return redirect(url_for('.user',username=username))
 
 
