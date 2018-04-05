@@ -9,9 +9,9 @@ class NameForm(FlaskForm):
 	submit = SubmitField('Submit')
 
 class EditProfileForm(FlaskForm):
-	name = StringField('真实姓名', validators=[Length(0, 64)])
+	name = StringField('姓名', validators=[Length(0, 64)])
 	location = StringField('你所在的城市', validators=[Length(0, 64)])
-	about_me = TextAreaField('关于我')
+	about_me = TextAreaField('介绍一下自己')
 	submit = SubmitField('发送')
 
 class EditProfileAdminForm(FlaskForm):
