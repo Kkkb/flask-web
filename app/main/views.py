@@ -30,6 +30,8 @@ def index():
 		page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
 		error_out=False)
 	posts = pagination.items
+#	if not current_user.is_authenticated:
+#            return current_app.login_manager.unauthorized()
 	return render_template('index.html', form=form, posts=posts, show_followed=show_followed, pagination=pagination)		
 
 

@@ -26,6 +26,7 @@ class Config:
 		pass
 
 class DevelopmentConfig(Config):
+	LOGIN_MESSAGE = '请先登录以'
 	DEBUG = True
 	MAIL_SERVER = 'smtp.126.com'
 	MAIL_PORT = 25

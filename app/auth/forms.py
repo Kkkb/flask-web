@@ -13,7 +13,7 @@ class RegistrationForm(FlaskForm):
 	password = PasswordField('密码', validators =[
 		Required(), EqualTo('password2', message='Passwords must match.')])
 	password2 = PasswordField('确认密码', validators=[Required()])
-	submit = SubmitField('注册')
+	submit = SubmitField('确定')
 
 	def validate_email(self, field):
 		if User.query.filter_by(email=field.data).first():

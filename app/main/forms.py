@@ -12,7 +12,7 @@ class EditProfileForm(FlaskForm):
 	name = StringField('姓名', validators=[Length(0, 64)])
 	location = StringField('你所在的城市', validators=[Length(0, 64)])
 	about_me = TextAreaField('介绍一下自己')
-	submit = SubmitField('发送')
+	submit = SubmitField('确定')
 
 class EditProfileAdminForm(FlaskForm):
 	email = StringField('Email',validators=[Required(), Length(1, 64),
