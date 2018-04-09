@@ -59,7 +59,7 @@
 	</div>
 </div>
 <h3> {{ user.username }} 的动态</h3>
-{% include '_posts.html' %}
+{% include '_posts_truncate.html' %}
 {% if pagination %}
 <div class="pagination">
 	{{ macros.pagination_widget(pagination, '.user', username=user.username)}}

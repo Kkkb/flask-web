@@ -32,7 +32,9 @@
 	</ul>
 </div>
 {% if pagination %}
-{% include '_posts.html' %}
+
+{% include '_posts_truncate.html' %}
+
 <div class="pagination">
 	{{ macros.pagination_widget(pagination, '.index')}}
 </div>
